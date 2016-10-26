@@ -1,0 +1,32 @@
+library(Matrix)
+library(xgboost)
+setwd("/Users/Max/GitHub/Fall2016-proj3-grp1/data/")
+
+#read feature into sparse matrix
+feature_sift<-read.csv("sift_features.csv")
+feature_sift_new<-t(feature_sift)
+feature_sift_new = Matrix(feature_sift_new, sparse = T) 
+
+y <- list.files("images/")
+y<- gsub('.{9}$', '', y)
+y<-as.numeric(unlist(y) == "dog")
+
+#train test split 
+num_image = NROW(feature_sift_new)
+train_index = sample(seq(1:num_image), 0.7 * num_image)
+train_x = feature_sift_new[train_index,]
+train_y = y[train_index]
+test_x = feature_sift_new[-train_index, ]
+test_y = y[-train_index]
+
+#train model
+bst = xgboost(data = train_x,  label = train_y, 
+                     max.depth = 4, eta = 1, nthread = 2, nround = 20,
+                     objective = "binary:logistic")
+
+
+pred  = predict(bst, test_x)
+#pred is in the form of probability, transform into class
+prediction = as.numeric(pred > 0.5)
+sum(prediction == test_y)/length(test_y)
+
