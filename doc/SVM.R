@@ -28,3 +28,6 @@ svm.pred <- predict(svm.model, testset[,-5001])
 pred <-as.matrix(svm.pred)
 confusionMatrix(pred, testset$y)
 
+
+svm_tune <- tune(svm, train.x=trainset[,-5001], train.y=trainset$y, scale = FALSE,
+     kernel="radial", ranges=list(cost=10^(-1:2), gamma=c(.5,1,2)))
