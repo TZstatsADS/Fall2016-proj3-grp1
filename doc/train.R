@@ -1,6 +1,9 @@
 library(e1071)
 library(gbm)
+# please change the path
 setwd("G:/Columbia/STAT GR5243/project03")
+# please change the training data set
+# note training data should be a data frame with a variable y as lable variable
 load("SURF+Color.RData")
 y<-rep(c(1,0),each=1000)
 xgboost_data=t(t(surf))
@@ -51,46 +54,42 @@ model_train<-function(train_data,method_all,method_svm){
     }
     
   } else if(method_all=="xgboost"){
-    # please add xgboost here
-    # return value should be an xgboost object that used to predict
-      # set up the cross-validated hyper-parameter search
-xgb_grid_1 = expand.grid(
-  nrounds = 100,
-  eta = c(0.01, 0.001, 0.0001),
-  max_depth = c(2, 4,6,8),
-  gamma = 1,
-  colsample_bytree = 0.6,
-  min_child_weight=0.5
-)
-
-# pack the training control parameters
-xgb_trcontrol_1 = trainControl(
-  method = "cv",
-  number = 5,  
-  allowParallel = TRUE
-)
-
-# train the model for each parameter combination in the grid, 
-#   using CV to evaluate
-xgb_train_1 = train(
-  x = xgboost_data,
-  y = as.factor(y),
-  trControl = xgb_trcontrol_1,
-  tuneGrid = xgb_grid_1,
-  method = "xgbTree"
-
-  
-  )
-para=xgb_train_1$bestTune
-      xgb_train=xgboost(data=xgboost_data,label=y,nrounds=para$nrounds,eta=para$eta,max_depth=para$max.depth,gamma=para$gamma)
-      
-      
-      
-    print("please add xgboost")
+    # set up the cross-validated hyper-parameter search
+    xgb_grid_1=expand.grid(
+      nrounds=100,
+      eta=c(0.01, 0.001, 0.0001),
+      max_depth=c(2, 4,6,8),
+      gamma=1,
+      colsample_bytree=0.6,
+      min_child_weight=0.5
+    )
+    # pack the training control parameters
+    xgb_trcontrol_1=trainControl(
+      method="cv",
+      number=5,  
+      allowParallel=TRUE
+    )
+    # train the model for each parameter combination in the grid, 
+    # using CV to evaluate
+    xgb_train_1=train(
+      x=xgboost_data,
+      y=as.factor(y),
+      trControl=xgb_trcontrol_1,
+      tuneGrid=xgb_grid_1,
+      method="xgbTree"
+    )
+    para=xgb_train_1$bestTune
+    xgb_train=xgboost(data=xgboost_data,label=y,nrounds=para$nrounds,eta=para$eta,max_depth=para$max.depth,gamma=para$gamma)
+    return(xgb_train)
   } else{
     print("no such a model exists")
   }
 }
-ptm<-proc.time()
+# baseline model training
+ptm_gbm<-proc.time()
+train_return_base<-model_train(surf,"gbm","linear")
+proc.time()-ptm_gbm
+# svm model training
+ptm_svm<-proc.time()
 train_return<-model_train(surf,"svm","linear")
-proc.time()-ptm
+proc.time()-ptm_svm
