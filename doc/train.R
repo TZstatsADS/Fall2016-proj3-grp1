@@ -82,7 +82,7 @@ xgb_train_1 = train(
   
   )
 para=xgb_train_1$bestTune
-      xgb_train=xgboost(data=xgboost_data,label=y,nrounds=para$nrounds,eta=para$eta,max.depth=para$max.depth,gamma=para$gamma)
+      xgb_train=xgboost(data=xgboost_data,label=y,nrounds=para$nrounds,eta=para$eta,max_depth=para$max.depth,gamma=para$gamma)
       
       
       
