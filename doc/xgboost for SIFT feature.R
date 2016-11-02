@@ -1,7 +1,7 @@
 ######XGBOOST
 #train model
 library(Matrix)
-library(xgboost)
+require(xgboost)
 
 #read feature into sparse matrix
 feature_sift<-read.csv("sift_features.csv")
@@ -82,6 +82,7 @@ xgb_trcontrol_1 = trainControl(
 
 # train the model for each parameter combination in the grid, 
 #   using CV to evaluate
+ time_start <-Sys.time()
 xgb_train_1 = train(
   x = train_x,
   y = as.factor(train_y),
@@ -89,7 +90,7 @@ xgb_train_1 = train(
   tuneGrid = xgb_grid_1,
   method = "xgbTree"
 )
-
+time_end <- Sys.time()
 #####What I get for best parameter
 #train model
 bst = xgboost(data = train_x,  label = train_y,max.depth = 4, eta = 0.5, nthread = 2, nround = 47,objective = "binary:logistic")
