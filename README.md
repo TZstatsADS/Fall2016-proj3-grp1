@@ -6,12 +6,13 @@ Term: Fall 2016
 
 + Team #
 + Team members
-	+ team member 1
-	+ team member 2
-	+ team member 3
-	+ team member 4
-	+ team member 5
-+ Project summary: In this project, we created a classification engine for images of poodles versus images of fried chickens. 
+	+ team member 1 Erica Kilbride
+	+ team member 2 Zhehao Liu
+	+ team member 3 Yixin Sun
+	+ team member 4 Qing Yin
+	+ team member 5 Chi Zhang
+	+ team member 6 Jingdan Zhao
++ Project summary: In this project, we created a classification engine for images of poodles versus images of fried chickens. Feature sets we have tried: SIFT, SIFT+Color, SURF, SURF+Color, CNN; classifier sets we have tried: Gradient Boosting Model, Random Forest, XGBoost, Support Vector Machine.
 	
 **Contribution statement**: ([default](doc/a_note_on_contributions.md)) All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement. 
 
