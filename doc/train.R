@@ -3,6 +3,7 @@ library(gbm)
 setwd("G:/Columbia/STAT GR5243/project03")
 load("SURF+Color.RData")
 y<-rep(c(1,0),each=1000)
+xgboost_data=t(t(surf))
 surf<-surf<-cbind(surf,y)
 # function for model training: 
 # format for train_data should be data frame
@@ -72,8 +73,8 @@ xgb_trcontrol_1 = trainControl(
 # train the model for each parameter combination in the grid, 
 #   using CV to evaluate
 xgb_train_1 = train(
-  x = train_x,
-  y = as.factor(train_y),
+  x = xgboost_data,
+  y = as.factor(y),
   trControl = xgb_trcontrol_1,
   tuneGrid = xgb_grid_1,
   method = "xgbTree"
