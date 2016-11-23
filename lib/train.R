@@ -1,37 +1,16 @@
-#########################################################
-### Train a classification model with training images ###
-#########################################################
-
-### Author: Yuting Ma
-### Project 3
-### ADS Spring 2016
-
-
-train <- function(dat_train, label_train, par=NULL){
+train <- function(dat_train, label_train){
+  library(gbm)
+  gbm_model<-gbm(label_train~.,data=dat_train,shrinkage=0.01,distribution="bernoulli",cv.folds=5,n.trees=2000,interaction.depth=5,verbose=F)
+  gbm_iter<-gbm.perf(gbm_model,method="cv")
   
-  ### Train a Gradient Boosting Model (GBM) using processed features from training images
-  
-  ### Input: 
-  ###  -  processed features from images 
-  ###  -  class labels for training images
-  ### Output: training model specification
-  
-  ### load libraries
-  library("gbm")
-  
-  ### Train with gradient boosting model
-  if(is.null(par)){
-    depth <- 3
-  } else {
-    depth <- par$depth
+  library(e1071)
+  cv_error_rate<-vector()
+  cost_set<-c(0.01,0.1,0.5,1,5,10,20,50,100)
+  for(i in cost_set){
+    soft_svm_cv<-svm(label_train~.,data=dat_train,type='C-classification',kernel='linear',cost=i,cross=5)
+    cv_error_rate<-cbind(cv_error_rate,1-(soft_svm_cv$tot.accuracy/100))
   }
-  fit_gbm <- gbm.fit(x=dat_train, y=label_train,
-                     n.trees=2000,
-                     distribution="bernoulli",
-                     interaction.depth=depth, 
-                     bag.fraction = 0.5,
-                     verbose=FALSE)
-  best_iter <- gbm.perf(fit_gbm, method="OOB")
-
-  return(list(fit=fit_gbm, iter=best_iter))
+  soft_svm<-svm(label_train~.,data=dat_train,type='C-classification',kernel='linear',cost=cost_set[which.min(cv_error_rate)])
+  
+  return(list(baseline=gbm_model,baseline_iter=gbm_iter,adv=soft_svm))
 }
