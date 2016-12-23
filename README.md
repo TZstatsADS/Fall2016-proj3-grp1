@@ -4,7 +4,7 @@
 
 Term: Fall 2016
 
-+ Team #
++ Team # 1
 + Team members
 	+ team member 1 Erica Kilbride
 	+ team member 2 Zhehao Liu
